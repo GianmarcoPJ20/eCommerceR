@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../database");
+const {isLoggedIn} = require('../lib/auth');
 
 //add/create product
 
-router.get("/add", async (req, res) => {
+router.get("/add", isLoggedIn, async (req, res) => {
   try {
     const categories = await pool.query("SELECT id, name FROM categories");
     res.render("products/add", { categories });
@@ -14,7 +15,7 @@ router.get("/add", async (req, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add", isLoggedIn, async (req, res) => {
   const { name, description, price, stock, id_category, url_imagen } = req.body;
   const id_seller = 1;
 
@@ -38,7 +39,7 @@ router.post("/add", async (req, res) => {
 });
 
 // list products
-router.get("/list", async (req, res) => {
+router.get("/list", isLoggedIn, async (req, res) => {
   try {
     const products = await pool.query("SELECT * FROM products");
     res.render("products/list", { products });
@@ -49,7 +50,7 @@ router.get("/list", async (req, res) => {
 });
 
 //delete product
-router.get("/delete/:id", async (req, res) => {
+router.get("/delete/:id", isLoggedIn, async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query("DELETE FROM products WHERE id = ?", [id]);
@@ -62,7 +63,7 @@ router.get("/delete/:id", async (req, res) => {
 
 //edit product
 
-router.get("/edit/:id", async (req, res) => {
+router.get("/edit/:id", isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
     const products = await pool.query("SELECT * FROM products WHERE id = ?", [
@@ -85,7 +86,7 @@ router.get("/edit/:id", async (req, res) => {
 });
 
 // Ruta para procesar la edición del producto
-router.post("/edit/:id", async (req, res) => {
+router.post("/edit/:id", isLoggedIn, async (req, res) => {
   const { id } = req.params;
   const { name, description, price, stock, id_category, url_imagen } = req.body;
 

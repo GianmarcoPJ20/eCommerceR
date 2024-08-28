@@ -40,6 +40,7 @@ app.use(passport.session());
 
 //Global variables
 app.use((req,res,next) => {
+  app.locals.user = req.user;
   next();
 });
 
