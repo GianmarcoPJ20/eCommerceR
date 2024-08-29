@@ -3,6 +3,18 @@ const router = express.Router();
 const pool = require("../database");
 const { isLoggedIn } = require("../lib/auth");
 
+
+//listar
+router.get("/", isLoggedIn, (req, res) => {
+  const user = req.user;
+
+  res.render("index", {
+    user,
+    showAddProduct: user && user.role === "vendedor",
+    showProductsClient: user && user.role === "cliente",
+  });
+});
+
 //añadir un producto
 router.get("/add", isLoggedIn, async (req, res) => {
   try {
