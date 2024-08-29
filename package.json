@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
+    "ecommercer": "file:",
     "express": "^4.19.2",
     "express-handlebars": "^8.0.1",
     "express-mysql-session": "^3.0.3",
