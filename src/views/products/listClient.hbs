@@ -11,9 +11,17 @@
           <p class="m-2">{{description}}</p>
           <p class="text-muted">Price: ${{price}}</p>
           <p class="text-muted">Stock: {{stock}}</p>
-          <a class="btn btn-primary" href="">
-            Add to Car
-          </a>
+          {{#if stock}}
+          <form action="/products/cart/add" method="POST">
+            <input type="hidden" name="productId" value="{{id}}">
+            <input type="number" name="amount" min="1" max="{{stock}}" value="1" class="form-control mb-2">
+            <button type="submit" class="btn btn-primary">
+              Add to Cart
+            </button>
+          </form>
+          {{else}}
+          <p class="text-danger">Out of Stock</p>
+          {{/if}}
         </div>
       </div>
     </div>

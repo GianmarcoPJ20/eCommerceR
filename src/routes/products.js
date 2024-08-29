@@ -3,7 +3,6 @@ const router = express.Router();
 const pool = require("../database");
 const { isLoggedIn } = require("../lib/auth");
 
-
 //listar
 router.get("/", isLoggedIn, (req, res) => {
   const user = req.user;
@@ -146,7 +145,6 @@ router.post("/edit/:id", isLoggedIn, async (req, res) => {
       "SELECT id_seller FROM products WHERE id = ?",
       [id]
     );
-
     const newProduct = {
       name,
       description,
@@ -162,6 +160,150 @@ router.post("/edit/:id", isLoggedIn, async (req, res) => {
   } catch (error) {
     console.error("Error updating product:", error);
     res.status(500).send("Error updating product");
+  }
+});
+
+//añadir carrito
+router.post("/cart/add", isLoggedIn, async (req, res) => {
+  try {
+    const { productId, amount } = req.body;
+    const user = req.user;
+
+    if (user.role !== "cliente") {
+      return res.redirect("/products/list");
+    }
+
+    const existingSale = await pool.query(
+      "SELECT * FROM sales WHERE id_product = ? AND id_customer = ? AND status = 0",
+      [productId, user.id]
+    );
+
+    if (existingSale.length > 0) {
+      await pool.query(
+        "UPDATE sales SET amount = amount + ? WHERE id_product = ? AND id_customer = ? AND status = 0",
+        [amount, productId, user.id]
+      );
+    } else {
+      await pool.query(
+        "INSERT INTO sales (id_product, id_customer, amount, status, sale_date) VALUES (?, ?, ?, 0, NOW())",
+        [productId, user.id, amount]
+      );
+    }
+
+    res.redirect("/products/listClient");
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    res.status(500).send("Error adding to cart");
+  }
+});
+
+//abrir carrito de compras
+router.get("/cart", isLoggedIn, async (req, res) => {
+  try {
+    const id_customer = req.user.id;
+    const user = req.user;
+    if (user.role !== "cliente") {
+      return res.redirect("/products/list");
+    }
+
+    const sales = await pool.query(
+      "SELECT p.*, s.amount FROM sales s JOIN products p ON s.id_product = p.id WHERE s.id_customer = ? AND s.status = 0",
+      [id_customer]
+    );
+    res.render("products/cart", { sales });
+  } catch (error) {
+    console.log(error);
+    console.error("Error fetching cart items:", error);
+    res.status(500).send("Error fetching cart items");
+  }
+});
+
+//actualizar
+
+// Aumentar
+router.post("/cart/increase/:id", isLoggedIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+    const { amount } = req.body;
+
+    if (user.role !== "cliente") {
+      return res.redirect("/products/list");
+    }
+
+    console.log(`Increasing amount: ${amount}`);
+
+    await pool.query(
+      "UPDATE sales SET amount = amount + ? WHERE id_product = ? AND id_customer = ? AND status = 0",
+      [amount, id, user.id]
+    );
+
+    res.redirect("/products/cart");
+  } catch (error) {
+    console.error("Error increasing amount in cart:", error);
+    res.status(500).send("Error increasing amount in cart");
+  }
+});
+
+// Disminuir
+router.post("/cart/decrease/:id", isLoggedIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+    const { amount } = req.body;
+
+    if (user.role !== "cliente") {
+      return res.redirect("/products/list");
+    }
+
+    const result = await pool.query(
+      "SELECT amount FROM sales WHERE id_product = ? AND id_customer = ? AND status = 0",
+      [id, user.id]
+    );
+
+    if (result.length > 0) {
+      const currentAmount = result[0].amount;
+      const newAmount = Math.max(currentAmount - amount, 0);
+
+      if (newAmount === 0) {
+        await pool.query(
+          "DELETE FROM sales WHERE id_product = ? AND id_customer = ? AND status = 0",
+          [id, user.id]
+        );
+      } else {
+        await pool.query(
+          "UPDATE sales SET amount = ? WHERE id_product = ? AND id_customer = ? AND status = 0",
+          [newAmount, id, user.id]
+        );
+      }
+    }
+
+    res.redirect("/products/cart");
+  } catch (error) {
+    console.error("Error decreasing amount in cart:", error);
+    res.status(500).send("Error decreasing amount in cart");
+  }
+});
+
+// Eliminar
+router.post("/cart/remove/:id", isLoggedIn, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    if (user.role !== "cliente") {
+      return res.redirect("/products/list");
+    }
+
+    await pool.query(
+      "DELETE FROM sales WHERE id_product = ? AND id_customer = ? AND status = 0",
+      [id, user.id]
+    );
+
+    res.redirect("/products/cart");
+  } catch (error) {
+    console.error("Error removing from cart:", error);
+    res.status(500).send("Error removing from cart");
   }
 });
 
