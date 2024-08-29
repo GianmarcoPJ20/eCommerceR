@@ -1,0 +1,29 @@
+<div class="container p-4">
+  <div class="row">
+    {{#each products}}
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <img src="{{url_imagen}}" alt="{{name}}" class="img-fluid mb-3" style="max-height: 150px;">
+          <h3 class="card-title text-uppercase">
+            {{name}}
+          </h3>
+          <p class="m-2">{{description}}</p>
+          <p class="text-muted">Price: ${{price}}</p>
+          <p class="text-muted">Stock: {{stock}}</p>
+          <a class="btn btn-primary" href="">
+            Add to Car
+          </a>
+        </div>
+      </div>
+    </div>
+    {{else}}
+    <div class="col-md-4 mx-auto">
+      <div class="card card-body text-center">
+        <p>There are no products available.</p>
+        <a href="/products/add">Add a Product!</a>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>

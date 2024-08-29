@@ -3,10 +3,14 @@ const router = express.Router();
 const pool = require("../database");
 const { isLoggedIn } = require("../lib/auth");
 
-//add/create product
-
+//añadir un producto
 router.get("/add", isLoggedIn, async (req, res) => {
   try {
+    const user = req.user;
+    if (user.role !== "vendedor") {
+      return res.redirect("/products/listClient");
+    }
+
     const categories = await pool.query("SELECT id, name FROM categories");
     res.render("products/add", { categories });
   } catch (error) {
@@ -17,7 +21,7 @@ router.get("/add", isLoggedIn, async (req, res) => {
 
 router.post("/add", isLoggedIn, async (req, res) => {
   const { name, description, price, stock, id_category, url_imagen } = req.body;
-  const id_seller = 1;
+  const id_seller = req.user.id;
 
   const newProduct = {
     name,
@@ -38,9 +42,14 @@ router.post("/add", isLoggedIn, async (req, res) => {
   }
 });
 
-// list products
+// Listar productos - vendedor
 router.get("/list", isLoggedIn, async (req, res) => {
   try {
+    const user = req.user;
+    if (user.role !== "vendedor") {
+      return res.redirect("/products/listClient");
+    }
+
     const products = await pool.query("SELECT * FROM products");
     res.render("products/list", { products });
   } catch (error) {
@@ -49,10 +58,32 @@ router.get("/list", isLoggedIn, async (req, res) => {
   }
 });
 
-//delete product
+// Listar productos - cliente
+router.get("/listClient", isLoggedIn, async (req, res) => {
+  try {
+    const user = req.user;
+    if (user.role !== "cliente") {
+      return res.redirect("/products/list");
+    }
+
+    const products = await pool.query("SELECT * FROM products");
+    res.render("products/listClient", { products });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).send("Error fetching products");
+  }
+});
+
+// Eliminar producto
 router.get("/delete/:id", isLoggedIn, async (req, res) => {
   const { id } = req.params;
   try {
+    const user = req.user;
+
+    if (user.role !== "vendedor") {
+      return res.redirect("/products/listClient");
+    }
+
     await pool.query("DELETE FROM products WHERE id = ?", [id]);
     res.redirect("/products/list");
   } catch (error) {
@@ -61,9 +92,14 @@ router.get("/delete/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-//edit product
-
+// Editar producto
 router.get("/edit/:id", isLoggedIn, async (req, res) => {
+  const user = req.user;
+
+  if (user.role !== "vendedor") {
+    return res.redirect("/products/list");
+  }
+
   try {
     const { id } = req.params;
     const products = await pool.query("SELECT * FROM products WHERE id = ?", [
@@ -71,11 +107,10 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
     ]);
     const categories = await pool.query("SELECT id, name FROM categories");
 
-    // Marca la categoría correcta como seleccionada
     const product = products[0];
     const updatedCategories = categories.map((category) => ({
       ...category,
-      isSelected: category.id === product.id_category, // Agrega el campo isSelected
+      isSelected: category.id === product.id_category,
     }));
 
     res.render("products/edit", { product, categories: updatedCategories });
@@ -85,13 +120,16 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-// Ruta para procesar la edición del producto
 router.post("/edit/:id", isLoggedIn, async (req, res) => {
+  const user = req.user;
+  if (user.role !== "vendedor") {
+    return res.redirect("/products/list");
+  }
+
   const { id } = req.params;
   const { name, description, price, stock, id_category, url_imagen } = req.body;
 
   try {
-    // Obtener el id_seller del producto actual
     const currentProduct = await pool.query(
       "SELECT id_seller FROM products WHERE id = ?",
       [id]
@@ -104,7 +142,7 @@ router.post("/edit/:id", isLoggedIn, async (req, res) => {
       stock,
       id_category,
       url_imagen,
-      id_seller: currentProduct[0].id_seller, // Mantener el id_seller existente
+      id_seller: currentProduct[0].id_seller,
     };
 
     await pool.query("UPDATE products SET ? WHERE id = ?", [newProduct, id]);
