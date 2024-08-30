@@ -9,7 +9,6 @@ body {
   padding: 0 10px;
 }
 
-
 .h2-auth {
   font-size: 2rem;
   margin-bottom: 20px;
@@ -20,7 +19,8 @@ form {
   flex-direction: column;
 }
 
-body.login-view::before, body.signup-view::before {
+body.login-view::before,
+body.signup-view::before {
   content: "";
   position: absolute;
   width: 100%;
@@ -52,11 +52,19 @@ body.login-view::before, body.signup-view::before {
 }
 
 .navbar {
-  background: black !important;
+  background: #343a40;
+  border-bottom: 3px solid #444;
+  transition: background 0.3s ease;
 }
 
-.nav-link {
-  color: #fff !important;
+.navbar-brand {
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.nav-link:hover {
+  color: #fff;
 }
 
 .masthead {
@@ -108,6 +116,15 @@ body {
   margin-bottom: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-list {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-list:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .card img {
@@ -134,6 +151,7 @@ body {
 
 .btn {
   border-radius: 50px;
+  margin: 8px;
 }
 
 .button-form {
@@ -157,7 +175,7 @@ body {
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 300px;
+  width: 400px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -189,7 +207,6 @@ body {
 .text-center h3 {
   margin-bottom: 20px;
 }
-
 
 .h2-auth {
   font-size: 2rem;
@@ -223,8 +240,8 @@ body {
   color: #fff;
 }
 
-.input-field input:focus~label,
-.input-field input:valid~label {
+.input-field input:focus ~ label,
+.input-field input:valid ~ label {
   font-size: 0.8rem;
   top: 10px;
   transform: translateY(-120%);
@@ -260,3 +277,102 @@ button:hover {
   margin-top: 30px;
   color: #fff;
 }
+
+.button-profile {
+  width: auto;
+  font-weight: 600;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 16px;
+  border: 2px solid transparent;
+  transition: 0.3s ease;
+}
+
+.card-profile {
+  background: transparent;
+  font-size: 16px;
+  color: #fff;
+  width: 300px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(9px);
+  margin: 0 auto;
+}
+
+.profile-view {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("/img/image.png"), #000;
+  background-position: center;
+  background-size: cover;
+}
+.profileOwner-view {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("/img/shoot.jpg"), #000;
+  background-position: center;
+  background-size: cover;
+}
+
+.card-profile img {
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.view-listClient {
+  content: "";
+  position: absolute;
+  background: rgba(245, 246, 250, 0.9);
+  background-position: center;
+  background-size: cover;
+}
+.view-cart {
+  content: "";
+  position: absolute;
+  background: rgba(245, 246, 250, 0.9);
+  background-position: center;
+  background-size: cover;
+}
+.view-add {
+  content: "";
+  position: absolute;
+  background: rgba(245, 246, 250, 0.9);
+  background-position: center;
+  background-size: cover;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+.text-muted {
+  color: #777;
+}
+
+.btn-group .btn {
+  border-radius: 50px;
+  margin: 0 5px;
+}
+
+.card-text {
+  color: #555;
+  margin-bottom: 10px;
+}
+.btn-danger {
+  background-color: #e57373;
+  border-color: #e57373;
+}
+.btn-secondary {
+  background-color: #9e9e9e;
+  border-color: #9e9e9e;
+}
+
+

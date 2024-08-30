@@ -285,7 +285,7 @@ router.post("/cart/decrease/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-// Eliminar
+//Delete product
 router.post("/cart/remove/:id", isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
@@ -306,6 +306,13 @@ router.post("/cart/remove/:id", isLoggedIn, async (req, res) => {
     res.status(500).send("Error removing from cart");
   }
 });
+
+
+
+
+
+
+
 
 
 //PAGOS

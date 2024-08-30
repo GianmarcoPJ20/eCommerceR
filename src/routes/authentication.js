@@ -27,7 +27,6 @@ router.post("/signin", isNotLoggedIn, (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return next(err);
 
-      // Redirige dependiendo del rol del usuario
       if (user.role === "cliente") {
         return res.redirect("/profileClient");
       } else if (user.role === "vendedor") {
