@@ -307,4 +307,9 @@ router.post("/cart/remove/:id", isLoggedIn, async (req, res) => {
   }
 });
 
+
+//PAGOS
+
+
+
 module.exports = router;
