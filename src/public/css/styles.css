@@ -74,7 +74,6 @@ body.signup-view::before {
   height: 100%;
   padding-top: 8rem;
   padding-bottom: 8rem;
-  background: url("/img/fondo.webp");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -375,4 +374,55 @@ button:hover {
   border-color: #9e9e9e;
 }
 
-
+.bg-background {
+  background-color: #181716;
+}
+.text-foreground {
+  color: #ffffff;
+}
+.bg-muted {
+  background-color: #181716;
+}
+.bg-discover {
+  background-color: #3c3c43;
+}
+.text-muted-foreground {
+  color: #ffffffbb;
+}
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.object-cover {
+  object-fit: cover;
+}
+.button-index {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  border: none;
+  padding: 4px 20px;
+  cursor: pointer;
+  width: 150px;
+  border-radius: 3px;
+  font-size: 16px;
+  border: 2px solid transparent;
+  transition: 0.3s ease;
+}
+.img-custom {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.img-custom:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
